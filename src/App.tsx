@@ -4,7 +4,7 @@ import { MarketInput } from './components/MarketInput.js'
 import { RecommendationDisplay } from './components/RecommendationDisplay.js'
 import { PriceChart } from './components/PriceChart.js'
 import type { Market, Crop, SellingRecommendation } from './types/index.js'
-import { getRecommendation, isRaxcoreConfigured, type AIProvider } from './services/aiService.js'
+import { getRecommendation } from './services/aiService.js'
 
 function App() {
   const [recommendation, setRecommendation] = useState<SellingRecommendation | null>(null)
@@ -12,19 +12,16 @@ function App() {
   const [selectedCrop, setSelectedCrop] = useState<Crop | null>(null)
   const [quantity, setQuantity] = useState<number>(0)
   const [isLoading, setIsLoading] = useState(false)
-  const [aiProvider, setAiProvider] = useState<AIProvider>(
-    isRaxcoreConfigured() ? 'raxcore' : 'local'
-  )
 
   const handleSubmit = async (market: Market, crop: Crop, qty: number) => {
-    console.log('Form submitted:', { market, crop, qty, aiProvider });
+    console.log('Form submitted:', { market, crop, qty });
     setIsLoading(true)
     setSelectedMarket(market)
     setSelectedCrop(crop)
     setQuantity(qty)
 
     try {
-      const rec = await getRecommendation(aiProvider, market, crop.id, crop.name, qty);
+      const rec = await getRecommendation('local', market, crop.id, crop.name, qty);
       console.log('Recommendation generated:', rec);
       setRecommendation(rec)
       setIsLoading(false)
@@ -47,30 +44,6 @@ function App() {
       <header className="app-header">
         <h1>🌾 AgriMarket Intelligence</h1>
         <p className="tagline">Empowering Kenyan Farmers with AI-Driven Market Insights</p>
-        
-        {/* AI Provider Toggle */}
-        <div className="ai-toggle">
-          <label>
-            <input
-              type="radio"
-              value="local"
-              checked={aiProvider === 'local'}
-              onChange={(e) => setAiProvider(e.target.value as AIProvider)}
-            />
-            💻 Local AI
-          </label>
-          <label>
-            <input
-              type="radio"
-              value="raxcore"
-              checked={aiProvider === 'raxcore'}
-              onChange={(e) => setAiProvider(e.target.value as AIProvider)}
-              disabled={!isRaxcoreConfigured()}
-            />
-            🤖 Raxcore AI
-            {!isRaxcoreConfigured() && <span className="config-needed"> (Configure API key)</span>}
-          </label>
-        </div>
       </header>
 
       <main className="app-main">
