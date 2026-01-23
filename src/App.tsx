@@ -21,7 +21,7 @@ function App() {
     setQuantity(qty)
 
     try {
-      const rec = await getRecommendation('local', market, crop.id, crop.name, qty);
+      const rec = await getRecommendation('raxcore', market, crop.id, crop.name, qty);
       console.log('Recommendation generated:', rec);
       setRecommendation(rec)
       setIsLoading(false)
