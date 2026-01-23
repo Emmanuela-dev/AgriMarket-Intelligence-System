@@ -1,20 +1,5 @@
 # 🌾 AgriMarket Intelligence System
 
-<div align="center">
-
-![Kenya Agriculture](https://img.shields.io/badge/Built%20for-Kenya-008751?style=for-the-badge)
-![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=for-the-badge&logo=typescript)
-![AI Powered](https://img.shields.io/badge/AI-Powered-FF6B6B?style=for-the-badge)
-
-**Empowering Kenyan farmers with AI-driven market intelligence for smarter selling decisions**
-
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Getting Started](#-getting-started) • [AI Engine](#-ai-recommendation-engine) • [API](#-raxcore-ai-integration)
-
-</div>
-
----
-
 ## 🎯 Overview
 
 AgriMarket Intelligence System is a location-based agricultural market intelligence platform that helps Kenyan farmers maximize their profits by providing:
@@ -180,51 +165,6 @@ Three actionable insights:
 - **npm** or **yarn**
 - **Raxcore AI API Key** (for production)
 
-### Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/Emmanuela-dev/AgriMarket-Intelligence-System.git
-
-# Navigate to project directory
-cd market
-
-# Install dependencies
-npm install
-
-# Create environment file
-cp .env.example .env
-
-# Add your Raxcore AI credentials to .env
-VITE_RAXCORE_AI_KEY=your_api_key_here
-VITE_RAXCORE_AI_ENDPOINT=https://api.raxcore.ai/v1/predict
-
-# Start development server
-npm run dev
-```
-
-### Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-VITE_RAXCORE_AI_KEY=rax_your_api_key_here
-VITE_RAXCORE_AI_ENDPOINT=https://api.raxcore.ai/v1/predict
-```
-
-### Build for Production
-
-```bash
-# Build optimized production bundle
-npm run build
-
-# Preview production build
-npm run preview
-```
-
----
-
----
 
 ## 🤖 AI Recommendation Engine
 ### Architecture
@@ -299,17 +239,7 @@ transportCost = distance * 15; // KES 15/km
 netProfit = (price - currentPrice) * quantity - transportCost;
 ```
 
-#### 6. **Decision Logic**
-```typescript
-if (trend === "rising" && forecast7d > currentPrice * 1.05)
-  → WAIT (expected 5%+ increase)
-  
-else if (alternativeMarkets.some(m => m.netProfit > currentRevenue * 0.1))
-  → SELL ELSEWHERE (10%+ better net profit)
-  
-else
-  → SELL NOW (current market is optimal)
-```
+
 
 ### Raxcore AI Integration
 
