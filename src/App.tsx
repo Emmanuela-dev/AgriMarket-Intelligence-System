@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './App.css'
+import { HomePage } from './components/HomePage.js'
 import { MarketInput } from './components/MarketInput.js'
 import { RecommendationDisplay } from './components/RecommendationDisplay.js'
 import { PriceChart } from './components/PriceChart.js'
@@ -7,6 +8,7 @@ import type { Market, Crop, SellingRecommendation } from './types/index.js'
 import { getRecommendation } from './services/aiService.js'
 
 function App() {
+  const [showHomePage, setShowHomePage] = useState(true)
   const [recommendation, setRecommendation] = useState<SellingRecommendation | null>(null)
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null)
   const [selectedCrop, setSelectedCrop] = useState<Crop | null>(null)
@@ -39,11 +41,33 @@ function App() {
     setQuantity(0)
   }
 
+  const handleGetStarted = () => {
+    setShowHomePage(false)
+  }
+
+  const handleBackToHome = () => {
+    setShowHomePage(true)
+    handleNewSearch()
+  }
+
+  if (showHomePage) {
+    return (
+      <div className="app-container full-width">
+        <HomePage onGetStarted={handleGetStarted} />
+      </div>
+    )
+  }
+
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>🌾 AgriMarket Intelligence</h1>
-        <p className="tagline">Empowering Kenyan Farmers with AI-Driven Market Insights</p>
+        <button onClick={handleBackToHome} className="home-button" title="Back to Home">
+           Home
+        </button>
+        <div className="header-content">
+          <h1> AgriMarket Intelligence</h1>
+          <p className="tagline">Empowering Kenyan Farmers with AI-Driven Market Insights</p>
+        </div>
       </header>
 
       <main className="app-main">

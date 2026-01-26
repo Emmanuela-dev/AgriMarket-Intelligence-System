@@ -76,12 +76,12 @@ export const RecommendationDisplay = ({
 
       <div className="recommendation-content">
         <div className="reasoning-box">
-          <h3>💡 AI Analysis</h3>
+          <h3> AI Analysis</h3>
           <p>{recommendation.reasoning}</p>
         </div>
 
         <div className="market-comparison">
-          <h3>📊 Market Comparison</h3>
+          <h3> Market Comparison</h3>
           <div className="market-card primary">
             <div className="market-header">
               <span className="market-label">Selected Market</span>
@@ -179,7 +179,7 @@ export const RecommendationDisplay = ({
         </div>
 
         <div className="info-box">
-          <strong>ℹ️ Note:</strong> This recommendation is based on AI analysis of historical price data, 
+          <strong>ℹ Note:</strong> This recommendation is based on AI analysis of historical price data, 
           current market conditions, and distance/transport cost calculations. Actual market conditions 
           may vary. Always verify current prices before making final decisions.
         </div>

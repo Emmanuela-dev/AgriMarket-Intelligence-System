@@ -37,7 +37,7 @@ export const PriceChart = ({ marketId, marketName, cropId, cropName }: PriceChar
 
   return (
     <div className="price-chart-container">
-      <h3>📈 30-Day Price History</h3>
+      <h3> 30-Day Price History</h3>
       <div className="chart-wrapper">
         <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="price-chart">
           {/* Grid lines */}
