@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { getHistoricalTrends } from '../services/aiRecommendation.js';
+import type { PriceTrend } from '../types/index.js';
 
 interface PriceChartProps {
   marketId: string;
@@ -9,10 +10,46 @@ interface PriceChartProps {
 }
 
 export const PriceChart = ({ marketId, marketName, cropId, cropName }: PriceChartProps) => {
-  const trends = useMemo(
-    () => getHistoricalTrends(marketId, marketName, cropId, cropName, 30),
-    [marketId, marketName, cropId, cropName]
-  );
+  const [trends, setTrends] = useState<PriceTrend[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTrends = async () => {
+      try {
+        const data = await getHistoricalTrends(marketId, marketName, cropId, cropName, 30);
+        setTrends(data);
+      } catch (error) {
+        console.error('Error fetching price trends:', error);
+        setTrends([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrends();
+  }, [marketId, marketName, cropId, cropName]);
+
+  if (loading) {
+    return (
+      <div className="price-chart-container">
+        <h3> 30-Day Price History</h3>
+        <div className="chart-wrapper">
+          <div className="loading-chart">Loading price data...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (trends.length === 0) {
+    return (
+      <div className="price-chart-container">
+        <h3> 30-Day Price History</h3>
+        <div className="chart-wrapper">
+          <div className="no-data">No price data available</div>
+        </div>
+      </div>
+    );
+  }
 
   const maxPrice = Math.max(...trends.map(t => t.price));
   const minPrice = Math.min(...trends.map(t => t.price));

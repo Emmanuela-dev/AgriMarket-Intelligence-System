@@ -8,9 +8,6 @@ import {
   estimateTransportCost
 } from '../data/mockData.js';
 
-// Backend API base URL
-const API_BASE_URL = 'http://localhost:3001/api';
-
 /**
  * Simple Moving Average for trend analysis
  */
@@ -25,32 +22,32 @@ const calculateSMA = (prices: number[], period: number): number => {
  */
 const predictFuturePrice = (historicalPrices: MarketPrice[], daysAhead: number): number => {
   if (historicalPrices.length < 7) return historicalPrices[historicalPrices.length - 1].pricePerUnit;
-  
+
   // Use last 30 days for prediction
   const recentPrices = historicalPrices.slice(-30);
   const n = recentPrices.length;
-  
+
   // Simple linear regression
   let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
-  
+
   recentPrices.forEach((price, index) => {
     sumX += index;
     sumY += price.pricePerUnit;
     sumXY += index * price.pricePerUnit;
     sumX2 += index * index;
   });
-  
+
   const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
   const intercept = (sumY - slope * sumX) / n;
-  
+
   // Predict price for future day
   const predictedPrice = slope * (n + daysAhead) + intercept;
-  
+
   // Add some bounds to keep predictions realistic
   const currentPrice = recentPrices[recentPrices.length - 1].pricePerUnit;
   const minPrice = currentPrice * 0.7;
   const maxPrice = currentPrice * 1.3;
-  
+
   return Math.max(minPrice, Math.min(maxPrice, predictedPrice));
 };
 
@@ -59,13 +56,13 @@ const predictFuturePrice = (historicalPrices: MarketPrice[], daysAhead: number):
  */
 const analyzeTrend = (historicalPrices: MarketPrice[]): 'rising' | 'falling' | 'stable' => {
   if (historicalPrices.length < 14) return 'stable';
-  
+
   const recentPrices = historicalPrices.slice(-14);
   const firstWeekAvg = recentPrices.slice(0, 7).reduce((sum, p) => sum + p.pricePerUnit, 0) / 7;
   const secondWeekAvg = recentPrices.slice(7, 14).reduce((sum, p) => sum + p.pricePerUnit, 0) / 7;
-  
+
   const change = (secondWeekAvg - firstWeekAvg) / firstWeekAvg;
-  
+
   if (change > 0.05) return 'rising';
   if (change < -0.05) return 'falling';
   return 'stable';
@@ -80,66 +77,25 @@ const calculateConfidence = (
   priceVariability: number
 ): number => {
   let confidence = 70; // Base confidence
-  
+
   // More historical data = higher confidence
   if (historicalPrices.length > 60) confidence += 10;
   else if (historicalPrices.length < 30) confidence -= 10;
-  
+
   // Clear trends = higher confidence
   if (trend !== 'stable') confidence += 10;
-  
+
   // Lower variability = higher confidence
   if (priceVariability < 0.1) confidence += 10;
   else if (priceVariability > 0.3) confidence -= 15;
-  
+
   return Math.max(30, Math.min(95, confidence));
 };
 
 /**
  * Main AI recommendation engine
  */
-export const generateSellingRecommendation = async (
-  selectedMarket: Market,
-  cropId: string,
-  cropName: string,
-  quantity: number
-): Promise<SellingRecommendation> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/recommendations`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        marketId: selectedMarket.id,
-        cropId,
-        cropName,
-        quantity,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to get recommendation');
-    }
-
-    return result.data;
-  } catch (error) {
-    console.error('Error fetching recommendation from backend:', error);
-    // Fallback to local calculation
-    return generateSellingRecommendationLocal(selectedMarket, cropId, cropName, quantity);
-  }
-};
-
-/**
- * Local fallback for AI recommendation engine
- */
-const generateSellingRecommendationLocal = (
+export const generateSellingRecommendation = (
   selectedMarket: Market,
   cropId: string,
   cropName: string,
@@ -249,38 +205,7 @@ const generateSellingRecommendationLocal = (
 /**
  * Get historical price trends for visualization
  */
-export const getHistoricalTrends = async (
-  marketId: string,
-  marketName: string,
-  cropId: string,
-  cropName: string,
-  daysBack: number = 90
-): Promise<PriceTrend[]> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/prices?marketId=${marketId}&cropId=${cropId}&daysBack=${daysBack}`);
-
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to get price trends');
-    }
-
-    return result.data;
-  } catch (error) {
-    console.error('Error fetching price trends from backend:', error);
-    // Fallback to local calculation
-    return getHistoricalTrendsLocal(marketId, marketName, cropId, cropName, daysBack);
-  }
-};
-
-/**
- * Local fallback for historical price trends
- */
-const getHistoricalTrendsLocal = (
+export const getHistoricalTrends = (
   marketId: string,
   marketName: string,
   cropId: string,

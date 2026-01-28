@@ -30,11 +30,11 @@ export const getRecommendation = async (
       return formatAIResponse(response);
     } catch (error) {
       console.warn('⚠️ Raxcore AI failed, falling back to local AI:', error);
-      return localAI(market, cropId, cropName, quantity);
+      return await localAI(market, cropId, cropName, quantity);
     }
   } else {
     console.log('💻 Using Local AI...');
-    return localAI(market, cropId, cropName, quantity);
+    return await localAI(market, cropId, cropName, quantity);
   }
 };
 
